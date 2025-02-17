@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Widget Demo</title>
+  <link rel="stylesheet" href="chat-widget.css">
+  <script src="chat-widget.js"></script>
+</head>
+<body>
+  <h1>Bienvenue sur la page de démonstration</h1>
+  <p>Ceci est un exemple d'intégration du Chat Widget.</p>
+<script>
+  var widget = new ChatWidget({
+    alignment: 'right', //indicates whether the box is aligned left or right of the screen.
+    padding: 30, //indicates the padding around the box (so it's not stuck on the side)
+    //user:"Gary", //indicates the user's name, if not mentionned it's "vous"
+    //botName: 'Gygax', //indicates bot's name if need be, otherwise it's called bot
+    recordUrl: 'http://127.0.0.1:5004/r', //input your own endpoint to parse recording
+    messageUrl: 'http://127.0.0.1:5004/generate', //input your own reply endpoint
+	//apiKey : 'Your API key' //if needed to access the endpoint (although I'd suggest not to do that in the frontend)
+    recordButton: true, //indicates wether there is a record button for the user to speak with the chatbot or not
+	//maintain2Record: true, //if there is a record button indicates wheter the button need to be held for record to start or if it's held automatically end user needs to press pause manually
+    //width:"35vw", // indicates width, units need to be included
+    //height:"70vh", // indicates height, units need to be included
+    i18n: {
+	  title: 'Chat', //indicates title displayed in the chatbox
+	  placeholder: 'Votre message...', //indicates message in the chatbox
+	  sendButton: 'Envoyer', 
+	  //minimizeButton: 'X'
+    }
+  });
+</script>
+</body>
+</html>

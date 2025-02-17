@@ -1,0 +1,104 @@
+/* chat-widget.css */
+#chat-widget {
+  position: fixed;
+  bottom: 20px;
+  width: 300px;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+  z-index: 1000;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+}
+
+.chat-title {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+}
+
+.chat-close-button {
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.chat-area {
+  padding: 10px;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.chat-input-container {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.chat-input-container input {
+  flex: 1;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.chat-send-button {
+  margin-left: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#chat-record-button {
+  width: 40px;
+  height: 40px;
+  background-color: red;
+  border: none;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+}
+
+#chat-record-button .record-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#chat-record-button.recording .record-dot {
+  border-radius: 0;
+}
+
+#chatLoading {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	display: inline-block;
+	border-top: 3px solid #000;
+	border-right: 3px solid transparent;
+	box-sizing: border-box;
+	animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+	transform: rotate(360deg);
+	}
+} 
