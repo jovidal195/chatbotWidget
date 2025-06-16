@@ -29,6 +29,7 @@ function ChatWidget(options) {
 	user: "Vous",
 	width : "300px",
 	height : "200px",
+	minimized : true,
     i18n: {
       title: 'Chat',
       placeholder: 'Votre message...',
@@ -89,6 +90,7 @@ function ChatWidget(options) {
   this.minimizeButton.addEventListener('click', function() {
     self.toggleMinimize();
   });
+  
   this.header.appendChild(this.minimizeButton);
 
   this.container.appendChild(this.header);
@@ -165,6 +167,10 @@ function ChatWidget(options) {
 
   this.container.appendChild(this.inputContainer);
   document.body.appendChild(this.container);
+  
+  if (this.options.minimized) {
+	self.toggleMinimize();
+  }
 }
 
 ChatWidget.prototype.showError = function(message) {
@@ -264,7 +270,7 @@ ChatWidget.prototype.sendAudio = function(blob) {
  */
 ChatWidget.prototype.addMessage = function(sender, text, audioBase64 = null) {
   var messageElem = document.createElement('div');
-  messageElem.classList.add("nouvelle-classe");
+  messageElem.classList.add("messageElem");
   messageElem.style.margin = '5px 0';
   messageElem.innerHTML = '<strong>' + sender + ' :</strong> ' + text;
   
@@ -318,10 +324,10 @@ ChatWidget.prototype.sendAjax = function(message, voice=false) {
   var self = this;
   const loader = this.loading
   loader.style.display = "initial";
-  let elements = document.querySelectorAll(".messageElem");
+  let msgelements = document.querySelectorAll(".messageElem");
 
   // Extraction du texte de chaque élément et concaténation dans une seule chaîne
-  let contexte = Array.from(elements).map(el => el.textContent).join("\n");
+  let contexte = Array.from(msgelements).slice(-10).map(el => el.textContent).join("\n");
   
   let body = { message: message , system : contexte}
 
@@ -333,7 +339,7 @@ ChatWidget.prototype.sendAjax = function(message, voice=false) {
 	  body = { ...body, "voice":true };
   }
   
-  console.log(body);
+  // console.log(body);
   
   fetch(this.options.messageUrl, {
     method: 'POST',
@@ -348,7 +354,7 @@ ChatWidget.prototype.sendAjax = function(message, voice=false) {
   })
   .then(function(data) {
     self.addMessage(self.options.botName, data.reply || 'Pas de réponse', data.audio);
-	console.log(data);
+	// console.log(data);
 	loader.style.display = "none";
 	
 	// Lecture de l'audio si disponible
