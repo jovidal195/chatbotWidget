@@ -23,7 +23,7 @@ function ChatWidget(options) {
     padding: 20,
     recordUrl: '',
     messageUrl: '',
-	apiKey: undefined, //je m'attends à un dictionnaire
+	getAuthToken : null, 
     recordButton: false,
 	maintain2Record: true,
 	user: "Vous",
@@ -320,55 +320,58 @@ ChatWidget.prototype.addMessage = function(sender, text, audioBase64 = null) {
  *
  * @param {string} message - Le message envoyé.
  */
-ChatWidget.prototype.sendAjax = function(message, voice=false) {
+ChatWidget.prototype.sendAjax = function(message, voice = false) {
   var self = this;
-  const loader = this.loading
+  const loader = this.loading;
   loader.style.display = "initial";
+
   let msgelements = document.querySelectorAll(".messageElem");
 
   // Extraction du texte de chaque élément et concaténation dans une seule chaîne
   let contexte = Array.from(msgelements).slice(-10).map(el => el.textContent).join("\n");
-  
-  let body = { message: message , system : contexte}
 
-  if(this.options.apiKey)  {
-	  body = { ...body, ...apiKey };
+  let body = { message: message, system: contexte };
+
+  if (voice) {
+    body = { ...body, "voice": true };
   }
-  
-  if(voice)  {
-	  body = { ...body, "voice":true };
-  }
-  
-  // console.log(body);
-  
-  fetch(this.options.messageUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  })
-  .then(function(response) {
-    if (!response.ok) {
-      throw new Error('Erreur réseau');
+
+  // Auth token (optionnel) via this.options.getAuthToken
+  ;(async () => {
+    const headers = { 'Content-Type': 'application/json' };
+
+    if (typeof self.options.getAuthToken === 'function') {
+      try {
+        const token = await self.options.getAuthToken();
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+      } catch (err) {
+        console.warn("Erreur dans getAuthToken:", err);
+      }
     }
-    return response.json();
-  })
-  .then(function(data) {
-    self.addMessage(self.options.botName, data.reply || 'Pas de réponse', data.audio);
-	// console.log(data);
-	loader.style.display = "none";
-	
-	// Lecture de l'audio si disponible
-    /*if (data.audio) {
-      let audio = new Audio("data:audio/mp3;base64," + data.audio);
-      audio.play().catch(error => console.error("Erreur de lecture audio:", error));
-    }*/
-  })
-  .catch(function(error) {
-    console.error('Erreur AJAX:', error);
-	loader.style.display = "none";
-    self.addMessage(self.options.botName, 'Erreur lors de la récupération de la réponse.');
-  });
+
+    fetch(self.options.messageUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body)
+    })
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Erreur réseau');
+      }
+      return response.json();
+    })
+    .then(function(data) {
+      self.addMessage(self.options.botName, data.reply || 'Pas de réponse', data.audio);
+      loader.style.display = "none";
+    })
+    .catch(function(error) {
+      console.error('Erreur AJAX:', error);
+      loader.style.display = "none";
+      self.addMessage(self.options.botName, 'Erreur lors de la récupération de la réponse.');
+    });
+  })();
 };
+
 
 /**
  * Bascule l'état minimisé du widget.

@@ -16,8 +16,24 @@
     //user:"Gary", //indicates the user's name, if not mentionned it's "vous"
     //botName: 'Gygax', //indicates bot's name if need be, otherwise it's called bot
     recordUrl: 'http://127.0.0.1:5004/r', //input your own endpoint to parse recording
-    messageUrl: 'http://127.0.0.1:5004/generate', //input your own reply endpoint
+    messageUrl: 'http://127.0.0.1:8000/chat', //input your own reply endpoint
 	//apiKey : 'Your API key' //if needed to access the endpoint (although I'd suggest not to do that in the frontend)
+	getAuthToken: async () => {
+		try {
+		  const res = await fetch(`http://127.0.0.1:8000/auth`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+			  user: "username"
+			})
+		  });
+		  const data = await res.json();
+		  return data.token;
+		} catch (err) {
+		  console.error("Erreur de récupération du token :", err);
+		  return null;
+		}
+	  },
     recordButton: true, //indicates wether there is a record button for the user to speak with the chatbot or not
 	//maintain2Record: true, //if there is a record button indicates wheter the button need to be held for record to start or if it's held automatically end user needs to press pause manually
     //width:"35vw", // indicates width, units need to be included
